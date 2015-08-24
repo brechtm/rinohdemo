@@ -1,22 +1,66 @@
-import os
-from datetime import datetime
-from flask import Flask, request, flash, url_for, redirect, \
-     render_template, abort, send_from_directory
+import json
+
+from io import BytesIO, StringIO
+
+from flask import Flask, request, send_file
+
+from rinoh.backend import pdf
+from rinoh.frontend.rst import ReStructuredTextParser
+
+from rinohlib.templates.article import Article, ArticleOptions
+
 
 app = Flask(__name__)
 app.config.from_pyfile('flaskapp.cfg')
 
-@app.route('/')
+
+@app.route('/', methods=['POST'])
 def index():
-    return render_template('index.html')
+    return render_and_send(request.form)
 
-@app.route('/<path:resource>')
-def serveStaticResource(resource):
-    return send_from_directory('static/', resource)
+@app.route('/', methods=['GET'])
+def test_index():
+    return render_and_send(TEST_DATA)
 
-@app.route("/test")
-def test():
-    return "<strong>It's Alive!</strong>"
+
+TEST_DATA = dict(content="""
+Title
+=====
+
+First Section
+-------------
+
+Hello *world*.
+
+Second Section
+--------------
+
+Goodbye world.
+
+""")
+
+
+def render_and_send(form_data):
+    pdf_output = render_rst(form_data)
+    response = send_file(pdf_output, as_attachment=True,
+                         attachment_filename='output.pdf',
+                         mimetype='application/pdf')
+    response.headers.add('content-length', str(pdf_output.getbuffer().nbytes))
+    print(response.headers)
+    return response
+
+
+def render_rst(data):
+    input_file = StringIO(data['content'])
+    parser = ReStructuredTextParser()
+    document_tree = parser.parse(input_file)
+    options = ArticleOptions()
+    document = Article(document_tree, options, backend=pdf)
+    pdf_output = BytesIO()
+    document.render(file=pdf_output)
+    pdf_output.seek(0)
+    return pdf_output
+
 
 if __name__ == '__main__':
     app.run()
