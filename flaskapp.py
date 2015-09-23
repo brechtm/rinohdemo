@@ -29,30 +29,12 @@ def test_index():
     return render_and_send(data, as_attachment=False)
 
 
-TEST_DATA = dict(content="""
-Title
-=====
-
-First Section
--------------
-
-Hello *world*.
-
-Second Section
---------------
-
-Goodbye world.
-
-""")
-
-
 def render_and_send(form_data, as_attachment=True):
     pdf_output = render_rst(form_data)
     response = send_file(pdf_output, as_attachment=as_attachment,
                          attachment_filename='output.pdf',
                          mimetype='application/pdf')
     response.headers.add('content-length', str(pdf_output.getbuffer().nbytes))
-    print(response.headers)
     return response
 
 
