@@ -16,11 +16,15 @@ app.config.from_pyfile('flaskapp.cfg')
 
 @app.route('/', methods=['POST'])
 def index():
-    return render_and_send(request.form)
+    return render_and_send(request.form, as_attachment=True)
+
 
 @app.route('/', methods=['GET'])
 def test_index():
-    return render_and_send(TEST_DATA)
+    data = {}
+    with open('../opqode.com/article.rst') as article:
+        data['content'] = article.read()
+    return render_and_send(data, as_attachment=False)
 
 
 TEST_DATA = dict(content="""
@@ -40,9 +44,9 @@ Goodbye world.
 """)
 
 
-def render_and_send(form_data):
+def render_and_send(form_data, as_attachment=True):
     pdf_output = render_rst(form_data)
-    response = send_file(pdf_output, as_attachment=True,
+    response = send_file(pdf_output, as_attachment=as_attachment,
                          attachment_filename='output.pdf',
                          mimetype='application/pdf')
     response.headers.add('content-length', str(pdf_output.getbuffer().nbytes))
