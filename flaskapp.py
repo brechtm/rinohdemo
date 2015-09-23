@@ -24,7 +24,7 @@ def index():
 @app.route('/', methods=['GET'])
 def test_index():
     data = {}
-    with open('../opqode.com/article.rst') as article:
+    with open('static/article.rst') as article:
         data['content'] = article.read()
     return render_and_send(data, as_attachment=False)
 
