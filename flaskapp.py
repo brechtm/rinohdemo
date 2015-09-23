@@ -7,7 +7,9 @@ from flask import Flask, request, send_file
 from rinoh.backend import pdf
 from rinoh.frontend.rst import ReStructuredTextParser
 
-from rinohlib.templates.article import Article, ArticleOptions
+from rinohlib.templates.article import Article
+
+from template import OPTIONS
 
 
 app = Flask(__name__)
@@ -58,8 +60,7 @@ def render_rst(data):
     input_file = StringIO(data['content'])
     parser = ReStructuredTextParser()
     document_tree = parser.parse(input_file)
-    options = ArticleOptions()
-    document = Article(document_tree, options, backend=pdf)
+    document = Article(document_tree, OPTIONS, backend=pdf)
     pdf_output = BytesIO()
     document.render(file=pdf_output)
     pdf_output.seek(0)
