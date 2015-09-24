@@ -49,5 +49,19 @@ def render_rst(data):
     return pdf_output
 
 
+ALLOW_ORIGIN = '*' if app.debug else 'http://www.opqode.com'
+
+
+def article_allow_origin(response):
+    """"""
+    if request.path == '/static/article.rst':
+        response.headers.add('Access-Control-Allow-Origin', ALLOW_ORIGIN)
+    return response
+
+
+if app.debug:
+    app.after_request(article_allow_origin)
+
+
 if __name__ == '__main__':
     app.run()
