@@ -26,25 +26,24 @@ def index():
 
 @app.route('/', methods=['GET'])
 def test_index():
-    data = {}
+    data = {'filename': 'article'}
     with open('static/article.rst') as article:
         data['content'] = article.read()
     return render_and_send(data, as_attachment=False)
 
 
 def render_and_send(form_data, as_attachment=True):
-    pdf_output = render_rst(form_data)
-    response = send_file(pdf_output,
-                         as_attachment=as_attachment,
-                         attachment_filename='output.pdf',
+    pdf_output = render_rst(form_data['content'])
+    response = send_file(pdf_output, as_attachment=as_attachment,
+                         attachment_filename=form_data['filename'] + '.pdf',
                          mimetype='application/pdf')
     response.headers.add('content-length',
                          str(pdf_output.getbuffer().nbytes))
     return response
 
 
-def render_rst(data):
-    input_file = StringIO(data['content'])
+def render_rst(content):
+    input_file = StringIO(content)
     parser = ReStructuredTextParser()
     document_tree = parser.parse(input_file)
     document = Article(document_tree, OPTIONS, backend=pdf)
