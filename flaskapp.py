@@ -37,8 +37,7 @@ def render_and_send(form_data, as_attachment=True):
     response = send_file(pdf_output, as_attachment=as_attachment,
                          attachment_filename=form_data['filename'] + '.pdf',
                          mimetype='application/pdf')
-    response.headers.add('content-length',
-                         str(pdf_output.getbuffer().nbytes))
+    response.headers.add('content-length', str(pdf_output.getbuffer().nbytes))
     return response
 
 
@@ -59,8 +58,7 @@ ALLOW_ORIGIN = '*' if DEV_MODE else 'http://www.opqode.com'
 def article_allow_origin(response):
     """Allow article.rst to be fetched by the opqode website"""
     if request.path == '/static/article.rst':
-        response.headers.add('Access-Control-Allow-Origin',
-                             ALLOW_ORIGIN)
+        response.headers.add('Access-Control-Allow-Origin', ALLOW_ORIGIN)
     return response
 
 
