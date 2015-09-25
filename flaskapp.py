@@ -16,6 +16,9 @@ app = Flask(__name__)
 app.config.from_pyfile('flaskapp.cfg')
 
 
+DEV_MODE = app.config['HOST_NAME'] == 'localhost'
+
+
 @app.route('/', methods=['POST'])
 def index():
     return render_and_send(request.form, as_attachment=True)
@@ -49,7 +52,7 @@ def render_rst(data):
     return pdf_output
 
 
-ALLOW_ORIGIN = '*' if app.debug else 'http://www.opqode.com'
+ALLOW_ORIGIN = '*' if DEV_MODE else 'http://www.opqode.com'
 
 
 def article_allow_origin(response):
@@ -59,8 +62,7 @@ def article_allow_origin(response):
     return response
 
 
-if app.debug:
-    app.after_request(article_allow_origin)
+app.after_request(article_allow_origin)
 
 
 if __name__ == '__main__':
