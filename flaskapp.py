@@ -69,4 +69,4 @@ app.after_request(article_allow_origin)
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
