@@ -58,8 +58,8 @@ stylesheet('header', base=SPHINX['header'],
 stylesheet('footer', base='header')
 
 stylesheet('title',
-           space_above=4*CM,
-           space_below=1*CM,
+           space_above=3*CM,
+           space_below=0.8*CM,
            typeface=Var('fonts').serif,
            font_size=32*PT,
            font_weight=BOLD,
@@ -89,7 +89,8 @@ stylesheet('toc level 1',
            tab_stops=[TabStop(1.0, RIGHT, fill='.  ')])
 
 stylesheet('enumerated list', base=SPHINX['enumerated list'],
-           margin_left=0)
+           margin_left=0,
+           flowable_spacing=3*PT)
 
 stylesheet('figure', base=SPHINX['figure'],
            space_below=20*PT)
@@ -149,6 +150,9 @@ stylesheet('table left border',
 
 stylesheet('table right border',
            base='table bottom border')
+
+stylesheet('admonition', base=SPHINX['admonition'],
+           stroke_width=None)
 
 
 HEADER_TEXT = 'About RinohType' + Tab() + Tab() + Variable(SECTION_TITLE(1))
