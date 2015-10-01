@@ -27,6 +27,12 @@ def index():
     return render_and_send(request.form, as_attachment=True)
 
 
+@app.route('/wake', methods=['GET'])
+def wake():
+    print('Waking up!')
+    return ('', 204)
+
+
 @app.route('/', methods=['GET'])
 def test_index():
     data = {'filename': 'article'}
@@ -59,8 +65,7 @@ ALLOW_ORIGIN = '*' if DEV_MODE else 'http://www.opqode.com'
 
 
 def article_allow_origin(response):
-    """Allow article.rst to be fetched by the opqode website"""
-    if request.path == '/static/article.rst':
+    if request.path == '/wake':
         response.headers.add('Access-Control-Allow-Origin', ALLOW_ORIGIN)
     return response
 
