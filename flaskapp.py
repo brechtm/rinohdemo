@@ -12,9 +12,6 @@ from rinohlib.templates.article import Article
 from template import OPTIONS
 
 
-os.chdir(os.path.dirname(__file__))
-
-
 app = Flask(__name__)
 app.config.from_pyfile('flaskapp.cfg')
 
@@ -35,10 +32,13 @@ def wake():
 
 @app.route('/', methods=['GET'])
 def test_index():
-    data = {'filename': 'article'}
-    with open('static/article.rst') as article:
-        data['content'] = article.read()
-    return render_and_send(data, as_attachment=False)
+    if DEV_MODE:
+        data = {'filename': 'article'}
+        with open('static/article.rst') as article:
+            data['content'] = article.read()
+        return render_and_send(data, as_attachment=False)
+    else:
+        return ('', 204)
 
 
 def render_and_send(form_data, as_attachment=True):
@@ -75,3 +75,6 @@ app.after_request(article_allow_origin)
 
 if __name__ == '__main__':
     app.run(debug=True)
+else:
+    os.chdir(os.path.dirname(__file__))
+
