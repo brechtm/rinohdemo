@@ -1,4 +1,4 @@
-import json
+import os
 
 from io import BytesIO, StringIO
 
@@ -10,6 +10,9 @@ from rinoh.frontend.rst import ReStructuredTextParser
 from rinohlib.templates.article import Article
 
 from template import OPTIONS
+
+
+os.chdir(os.path.dirname(__file__))
 
 
 app = Flask(__name__)
